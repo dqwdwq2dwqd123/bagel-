@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zakria's Communication Bagel 🤍</title>
+<style>
+  :root {
+    --pink: #ffd6e8;
+    --pink-deep: #ffb3d1;
+    --pink-darker: #ff8fb8;
+    --text: #6b3f55;
+    --white: #ffffff;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #ffe3ee 0%, #ffd1e6 50%, #ffc2dd 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    color: var(--text);
+  }
+
+  .card {
+    background: var(--white);
+    border-radius: 28px;
+    box-shadow: 0 12px 40px rgba(255, 143, 184, 0.35);
+    max-width: 480px;
+    width: 100%;
+    padding: 36px 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before, .card::after {
+    content: "🤍";
+    position: absolute;
+    font-size: 28px;
+    opacity: 0.6;
+  }
+
+  .card::before {
+    top: 14px;
+    left: 14px;
+  }
+
+  .card::after {
+    bottom: 14px;
+    right: 14px;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+    color: var(--pink-darker);
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+    color: var(--text);
+    opacity: 0.7;
+    margin-bottom: 20px;
+  }
+
+  .progress {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 24px;
+  }
+
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--pink);
+    transition: all 0.3s ease;
+  }
+
+  .dot.active {
+    background: var(--pink-darker);
+    transform: scale(1.3);
+  }
+
+  .dot.done {
+    background: var(--pink-deep);
+  }
+
+  .stage {
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    animation: fadeIn 0.4s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .emoji {
+    font-size: 4rem;
+    line-height: 1;
+  }
+
+  .step-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: var(--pink-darker);
+  }
+
+  .step-text {
+    font-size: 1rem;
+    color: var(--text);
+    line-height: 1.5;
+    max-width: 360px;
+  }
+
+  .choices {
+    display: flex;
+    gap: 14px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  button {
+    font-family: inherit;
+    border: none;
+    border-radius: 999px;
+    padding: 12px 28px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: var(--white);
+    background: linear-gradient(135deg, var(--pink-deep), var(--pink-darker));
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: 0 4px 12px rgba(255, 143, 184, 0.45);
+  }
+
+  button:hover {
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 6px 16px rgba(255, 143, 184, 0.6);
+  }
+
+  button.secondary {
+    background: var(--white);
+    color: var(--pink-darker);
+    border: 2px solid var(--pink-deep);
+    box-shadow: none;
+  }
+
+  .nav {
+    margin-top: 26px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .footer-note {
+    margin-top: 18px;
+    font-size: 0.8rem;
+    color: var(--text);
+    opacity: 0.55;
+  }
+
+  .communication {
+    margin-top: 20px;
+    width: 100%;
+    background: #fff0f6;
+    border: 2px dashed var(--pink-deep);
+    border-radius: 18px;
+    padding: 14px 18px;
+    text-align: left;
+  }
+
+  .comm-label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--pink-darker);
+    margin-bottom: 6px;
+  }
+
+  .comm-text {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--text);
+  }
+
+  .hearts-fall {
+    position: fixed;
+    top: -40px;
+    font-size: 1.5rem;
+    pointer-events: none;
+    animation: fall linear forwards;
+    opacity: 0.9;
+  }
+
+  @keyframes fall {
+    to {
+      transform: translateY(110vh) rotate(360deg);
+      opacity: 0;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h1>Zakria's Communication Bagel 🤍</h1>
+  <p class="subtitle">a step-by-step bagel journey, made with love</p>
+
+  <div class="progress" id="progress"></div>
+
+  <div class="stage" id="stage"></div>
+
+  <div class="nav" id="nav"></div>
+
+  <p class="footer-note">for Maria, with 🤍</p>
+</div>
+
+<script>
+  // choice: null until step 2 picks 'tuna' or 'egg'
+  let choice = null;
+  let currentStep = 1;
+
+  // ===================================================================
+  // COMMUNICATION TEXT
+  // Edit the strings below to add your own message for each step.
+  // Steps 4, 5 and 6 depend on the chosen filling (egg or tuna), so
+  // each has its own "egg" and "tuna" version. Step 7 only exists on
+  // the tuna path. "final" shows on the very last screen.
+  // ===================================================================
+  const COMMUNICATION = {
+    1: "Welcome to my Communication Bagel, here we will not only learn how to make TWO different breakfast bagels but also where Zakria has gone wrong these past few days",
+    2: "Here we have a pretty important decision, Tuna or Egg, kinda like that choice Zakria had between calling his friends or Maria, he chose to talk to his friends instead of calling Maria when they hadn't spoken in two days, these are mistakes that Zakria shouldn't be making two years into being with his poop.",
+    3: "Now we are going to throw them in the oven, which is what Maria should do with Zakria and hope that he comes out smarter because mate are you STUPIDDD choosing your poop shouldn't even be up for debate, ITS POOP or nobody, especially because of the context (if it wss any other day it would have been all good in the hood.",
+    4: {
+      egg: "Sometimes I think you wish you could turn me into scrambled eggs so you don't have to deal with me, All jokes aside poop, I was wrong on so many levels that night and I will do better .",
+      tuna: "Teamwork makes the dream work darling, and that is what we are Maria, a team who prioritises each other (past examples might mot show that, but that is ME zakria sabir."
+    },
+    5: {
+      egg: "I am here on this planet to worship you Maria, to serve you, to adhere to your every command, to be your slave, to listen, but most importantly, to communicate, and that is what I vow to do.",
+      tuna: "Layering things on takes care, but it's worth it, the only layering I do is when I stack issues on top of one another, like how I fell asleep. That also wasb't cool, I should hsve communicated.."
+    },
+    6: {
+      egg: " I should have communicated to you that I was getting tired darling. Especially considering the fact that, that wss me trying to make it up to you..",
+      tuna: "These silly small mistakes end here poop.."
+    },
+    7: {
+      tuna: "WE ALMOST THEREE POOPPP."
+    },
+    final: "Thanks for going through this with me. I hope it put a fat grin on your face this morning darling, just like you do to mine. 🤍"
+  };
+
+  // total visible dots, always show 7 max (path-dependent steps merge visually)
+  const TOTAL_DOTS = 7;
+
+  const stageEl = document.getElementById('stage');
+  const navEl = document.getElementById('nav');
+  const progressEl = document.getElementById('progress');
+
+  function renderProgress() {
+    progressEl.innerHTML = '';
+    for (let i = 1; i <= TOTAL_DOTS; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'dot';
+      if (i < currentStep) dot.classList.add('done');
+      if (i === currentStep) dot.classList.add('active');
+      progressEl.appendChild(dot);
+    }
+  }
+
+  function spawnHearts() {
+    for (let i = 0; i < 14; i++) {
+      const heart = document.createElement('div');
+      heart.className = 'hearts-fall';
+      heart.textContent = '🤍';
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.animationDuration = (2 + Math.random() * 2) + 's';
+      heart.style.fontSize = (1 + Math.random() * 1.2) + 'rem';
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 4500);
+    }
+  }
+
+  function renderNav(showBack, showNext, nextLabel = 'Next →') {
+    navEl.innerHTML = '';
+    if (showBack) {
+      const back = document.createElement('button');
+      back.className = 'secondary';
+      back.textContent = '← Back';
+      back.onclick = goBack;
+      navEl.appendChild(back);
+    }
+    if (showNext) {
+      const next = document.createElement('button');
+      next.textContent = nextLabel;
+      next.onclick = goNext;
+      navEl.appendChild(next);
+    }
+  }
+
+  function goBack() {
+    if (currentStep === 1) return;
+    if (currentStep === 3) {
+      choice = null; // reset choice if going back past the fork
+    }
+    currentStep--;
+    render();
+  }
+
+  function goNext() {
+    currentStep++;
+    render();
+  }
+
+  function chooseFilling(type) {
+    choice = type;
+    currentStep++;
+    render();
+  }
+
+  function getCommunicationText() {
+    let entry;
+    if (currentStep >= 8) {
+      entry = COMMUNICATION.final;
+    } else {
+      entry = COMMUNICATION[currentStep];
+    }
+
+    if (entry && typeof entry === 'object') {
+      return entry[choice] || '';
+    }
+    return entry || '';
+  }
+
+  function appendCommunication() {
+    const text = getCommunicationText();
+    if (!text) return;
+
+    const block = document.createElement('div');
+    block.className = 'communication';
+    block.innerHTML = `<span class="comm-label">🤍 Communication</span><p class="comm-text">${text}</p>`;
+    stageEl.appendChild(block);
+  }
+
+  // Step content definitions
+  function render() {
+    stageEl.innerHTML = '';
+    renderProgress();
+
+    switch (currentStep) {
+      case 1:
+        stageEl.innerHTML = `
+          <div class="emoji">🥯🔪</div>
+          <div class="step-title">Step 1: Cut your bagel</div>
+          <div class="step-text">Grab your bagel and slice it carefully in half. Two perfect halves, ready for JEPICNESS.</div>
+        `;
+        renderNav(false, true);
+        break;
+
+      case 2:
+        stageEl.innerHTML = `
+          <div class="emoji">🤔</div>
+          <div class="step-title">Step 2: Decide your filling</div>
+          <div class="step-text">What's it going to be today?</div>
+          <div class="choices">
+            <button onclick="chooseFilling('tuna')">🐟 Tuna</button>
+            <button onclick="chooseFilling('egg')">🍳 Scrambled Eggs</button>
+          </div>
+        `;
+        renderNav(true, false);
+        break;
+
+      case 3:
+        stageEl.innerHTML = `
+          <div class="emoji">🍳🥯</div>
+          <div class="step-title">Step 3: Toast your bagels</div>
+          <div class="step-text">Pop both halves face down in a dry pan over medium heat until they warm on both sides.</div>
+        `;
+        renderNav(true, true);
+        break;
+
+      case 4:
+        if (choice === 'egg') {
+          stageEl.innerHTML = `
+            <div class="emoji">🍳🥄</div>
+            <div class="step-title">Step 4: Make your filling</div>
+            <div class="step-text">Crack a couple of eggs into a bowl, whisk them up, and scramble gently in a pan until soft and fluffy.</div>
+          `;
+        } else {
+          stageEl.innerHTML = `
+            <div class="emoji">🐟🌽🥄</div>
+            <div class="step-title">Step 4: Make your filling</div>
+            <div class="step-text">Drain a tin of tuna, mix it with sweetcorn and a generous squirt of mayo. Stir until creamy and combined.</div>
+          `;
+        }
+        renderNav(true, true);
+        break;
+
+      case 5:
+        stageEl.innerHTML = `
+          <div class="emoji">🥯➕${choice === 'egg' ? '🍳' : '🐟'}</div>
+          <div class="step-title">Step 5: Add toppings to your bagel</div>
+          <div class="step-text">Spoon your ${choice === 'egg' ? 'scrambled eggs' : 'tuna sweetcorn mayo'} generously onto your toasted bagel halves.</div>
+        `;
+        renderNav(true, true);
+        break;
+
+      case 6:
+        if (choice === 'tuna') {
+          stageEl.innerHTML = `
+            <div class="emoji">🧀🔥</div>
+            <div class="step-title">Step 6: Cheese it & oven it</div>
+            <div class="step-text">Top your tuna bagel with a layer of cheese and pop it in the oven until the cheese is melted and bubbly.</div>
+          `;
+          renderNav(true, true, 'Next →');
+        } else {
+          stageEl.innerHTML = `
+            <div class="emoji">😋🥯</div>
+            <div class="step-title">Step 6: Eat!</div>
+            <div class="step-text">Your scrambled egg bagel is ready. Enjoy every bite and GOBBLEE!</div>
+          `;
+          renderNav(true, true, 'Finish 🤍');
+        }
+        break;
+
+      case 7:
+        if (choice === 'tuna') {
+          stageEl.innerHTML = `
+            <div class="emoji">😋🧀🥯</div>
+            <div class="step-title">Step 7: Eat!</div>
+            <div class="step-text">Your melty tuna and cheese bagel is fresh out of the oven. Tuck in POOPPP!</div>
+          `;
+          renderNav(true, true, 'Finish 🤍');
+        } else {
+          finalScreen();
+          return;
+        }
+        break;
+
+      default:
+        finalScreen();
+        return;
+    }
+
+    appendCommunication();
+  }
+
+  function finalScreen() {
+    stageEl.innerHTML = `
+      <div class="emoji">🥯🤍🎉</div>
+      <div class="step-title">Bagel Complete!</div>
+      <div class="step-text">You made it through Zakria's Communication Bagel. Hope it was as lovely as you are. Enjoy your bagel!</div>
+    `;
+    renderNav(false, true, 'Start Again 🔁');
+    progressEl.innerHTML = '';
+    for (let i = 1; i <= TOTAL_DOTS; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'dot done';
+      progressEl.appendChild(dot);
+    }
+    spawnHearts();
+    appendCommunication();
+    navEl.querySelector('button').onclick = () => {
+      choice = null;
+      currentStep = 1;
+      render();
+    };
+  }
+
+  render();
+</script>
+
+</body>
+</html>
